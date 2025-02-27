@@ -1,0 +1,38 @@
+services:
+  frontend:
+    restart: always
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - ./api/.env.local
+  api:
+    build: ./api
+    command: python manage.py runserver 0.0.0.0:8000
+    working_dir: /code/myproject
+    env_file:
+      - ./api/.env.local
+    volumes:
+      - ./api:/code/
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - ./api/.env.local
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
