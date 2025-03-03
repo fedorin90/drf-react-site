@@ -3,6 +3,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
+import api from '../api/axios'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -18,32 +19,40 @@ const validatePassword = (password) => {
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email) // Вернет true, если email корректный
+  return emailRegex.test(email)
 }
 
 const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
+  const [rePassword, setRePassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const validation = validatePassword(password)
-  const isEmailValid = validateEmail(email)
+  const [showRePassword, setShowRePassword] = useState(false)
   const navigate = useNavigate()
 
-  const isValid = Object.values(validation).every(Boolean) && isEmailValid
+  const validation = validatePassword(password)
+  const isEmailValid = validateEmail(email)
+  const isPasswordValid = Object.values(validation).every(Boolean)
+  const isRePasswordValid = password === rePassword
+
+  const isValid = isEmailValid && isPasswordValid && isRePasswordValid
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post('http://localhost:5050/register', {
+      const response = await api.post('auth/users/', {
         email,
         password,
-        name,
+        re_password: rePassword,
+        first_name: firstName,
+        last_name: lastName,
       })
-      toast.info(response.data.message)
+      toast.info(`Please confirm your email  "${response.data.email}"`)
       navigate('/login')
     } catch (err) {
-      toast.error(err.response.data.error)
+      toast.error(err.response.data.error || 'Registration failed')
     }
   }
   return (
@@ -53,26 +62,23 @@ const Register = () => {
         <Col xs={4}>
           <h1>Register</h1>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            {/* Email */}
+            <Form.Group className="mb-3">
               <Form.Label>Email address</Form.Label>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  style={{
-                    borderColor: email
-                      ? isEmailValid
-                        ? 'green'
-                        : 'red'
-                      : '#ccc',
-                    outline: 'none',
-                    flex: 1,
-                  }}
-                />
-              </div>
+              <Form.Control
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  borderColor: email
+                    ? isEmailValid
+                      ? 'green'
+                      : 'red'
+                    : '#ccc',
+                }}
+              />
               {email && (
                 <Form.Text style={{ color: isEmailValid ? 'green' : 'red' }}>
                   {isEmailValid ? (
@@ -81,23 +87,39 @@ const Register = () => {
                     </>
                   ) : (
                     <>
-                      <FaTimes /> Invalid email format (example@example.com)
+                      <FaTimes /> Invalid email format
                     </>
                   )}
                 </Form.Text>
               )}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicName">
-              <Form.Label>Name</Form.Label>
+
+            {/* FirstName */}
+            <Form.Group className="mb-3">
+              <Form.Label>First name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 required
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+
+            {/* LastName */}
+            <Form.Group className="mb-3">
+              <Form.Label>Last name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </Form.Group>
+
+            {/* Password */}
+            <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <InputGroup>
                 <Form.Control
@@ -108,11 +130,10 @@ const Register = () => {
                   required
                   style={{
                     borderColor: password
-                      ? isValid
-                        ? 'green' // Если пароль валиден, зелёный
-                        : 'red' // Если не валиден, красный
-                      : '#ccc', // Если пустое, стандартный серый
-                    outline: 'none',
+                      ? isPasswordValid
+                        ? 'green'
+                        : 'red'
+                      : '#ccc',
                   }}
                 />
                 <InputGroup.Text
@@ -148,7 +169,46 @@ const Register = () => {
                 </ul>
               )}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+
+            {/* Confirm Password (re_password) */}
+            <Form.Group className="mb-3">
+              <Form.Label>Confirm Password</Form.Label>
+              <InputGroup>
+                <Form.Control
+                  type={showRePassword ? 'text' : 'password'}
+                  placeholder="Re-enter your password"
+                  value={rePassword}
+                  onChange={(e) => setRePassword(e.target.value)}
+                  required
+                  style={{
+                    borderColor: rePassword
+                      ? isRePasswordValid
+                        ? 'green'
+                        : 'red'
+                      : '#ccc',
+                  }}
+                />
+                <InputGroup.Text
+                  onClick={() => setShowRePassword(!showRePassword)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {showRePassword ? <FaEyeSlash /> : <FaEye />}
+                </InputGroup.Text>
+              </InputGroup>
+              {rePassword && (
+                <Form.Text
+                  style={{ color: isRePasswordValid ? 'green' : 'red' }}
+                >
+                  {isRePasswordValid ? <FaCheck /> : <FaTimes />}{' '}
+                  {isRePasswordValid
+                    ? 'Passwords match'
+                    : 'Passwords do not match'}
+                </Form.Text>
+              )}
+            </Form.Group>
+
+            {/* Terms and Conditions */}
+            <Form.Group className="mb-3">
               <Form.Check
                 type="checkbox"
                 label={
@@ -167,11 +227,13 @@ const Register = () => {
                 required
               />
             </Form.Group>
+
+            {/* Submit Button */}
             <Button
               variant="primary"
               type="submit"
               disabled={!isValid}
-              style={{ background: isValid || 'gray' }}
+              style={{ background: isValid ? '#007bff' : 'gray' }}
             >
               Create account
             </Button>

@@ -10,7 +10,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     Authorization: token ? `Token ${token}` : '',
   },
-  withCredentials: true, // Для передачи куки на сервер
+  withCredentials: true,
 })
 
 api.interceptors.request.use((config) => {

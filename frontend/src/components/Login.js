@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
-import axios from 'axios'
+import api from '../api/axios'
 
 const style = {
   divider: {
@@ -32,13 +32,10 @@ const Login = ({ fetchUser, setCookie, user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(
-        'http://127.0.0.1:8000/api/auth/token/login/',
-        {
-          email,
-          password,
-        }
-      )
+      const response = await api.post('auth/token/login/', {
+        email,
+        password,
+      })
 
       const token = response.data.auth_token
       console.log('Auth token:', token) // Проверяем токен
