@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { useCookies } from 'react-cookie'
@@ -22,13 +22,13 @@ function App() {
   const fetchUser = async () => {
     try {
       const response = await api.get('auth/users/me/')
-      console.log('Fetched user:', response.data) // Логируем ответ
       setUser({
         email: response.data.email,
+        firstName: response.data.first_name,
+        lastName: response.data.last_name,
         isDefault: false,
       }) // Устанавливаем пользователя
     } catch (err) {
-      console.error('Fetch user error:', err) // Логируем ошибку
       //TODO добавить обработчкик 401
       setUser(defaultUser)
     }
@@ -54,10 +54,10 @@ function App() {
       <Header user={user} logout={handleLogout} />
       <Routes>
         <Route path="/" element={<Welcome user={user} />} />
-        {/* <Route
+        <Route
           path="/profile"
           element={<Profile user={user} fetchUser={fetchUser} />}
-        /> */}
+        />
         <Route path="/register" element={<Register />} />
         <Route
           path="/login"

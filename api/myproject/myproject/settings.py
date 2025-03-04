@@ -28,6 +28,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = []
 
 
@@ -57,6 +58,9 @@ REST_FRAMEWORK = {
     ],
 }
 
+DOMAIN = os.getenv("FRONTEND_URL")
+SITE_NAME = os.getenv("SITE_NAME")
+
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SERIALIZERS": {
@@ -69,6 +73,7 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password-reset/{uid}/{token}/",
     "SEND_CONFIRMATION_EMAIL": True,
 }
+
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"  # Gmail

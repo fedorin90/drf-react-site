@@ -1,47 +1,39 @@
-import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
-import {
-  Col,
-  Row,
-  Image,
-  Form,
-  InputGroup,
-  Button,
-  Container,
-} from 'react-bootstrap'
-import defaultAvatar from '../images/default_avatar.png'
+import { Col, Row, Form, InputGroup, Button, Container } from 'react-bootstrap'
+import api from '../api/axios'
 
 const Profile = ({ user, fetchUser }) => {
-  const [name, setName] = useState(user.name || '')
+  const [firstName, setFirstName] = useState(user.firstName || '')
+  const [lastName, setLastName] = useState(user.lastName || '')
 
   const [selectedFile, setSelectedFile] = useState(null)
 
-  const handleNameChange = (e) => setName(e.target.value)
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setSelectedFile(file) // Сохраняем файл
-    }
-  }
+  const handleFirstNameChange = (e) => setFirstName(e.target.value)
+  const handleLastNameChange = (e) => setLastName(e.target.value)
 
   const handleSave = async () => {
     try {
-      const formData = new FormData()
-      formData.append('name', name)
-      if (selectedFile) {
-        formData.append('photo', selectedFile)
+      const formData = {
+        first_name: firstName,
+        last_name: lastName,
       }
-
-      await axios.put('http://localhost:5050/profile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true,
-      })
+      await api.patch('auth/users/me/', formData)
       fetchUser()
       toast.success('Profile updated!')
     } catch (error) {
-      console.error('Error updating profile:', error)
+      toast.error('Error updating profile:', error)
+    }
+  }
+
+  const handlePasswordReset = async () => {
+    try {
+      await api.post('auth/users/reset_password/', { email: user.email })
+      toast.info(
+        'We have sent you an email with the link to reset your password.'
+      )
+    } catch (error) {
+      toast.error('Error updating profile:', error)
     }
   }
 
@@ -51,41 +43,34 @@ const Profile = ({ user, fetchUser }) => {
         <Col></Col>
         <Col xs={4}>
           <h1>Profile</h1>
-          <Image
-            src={
-              user.google_user
-                ? user.photo || defaultAvatar
-                : user.photo
-                ? `http://localhost:5050${user.photo}` // Для локальных фото
-                : defaultAvatar // Если фото нет, показываем дефолтное
-            }
-            rounded
-            width={128}
-            height={128}
-          />
           <p />
-          <Form.Label>Choose avatar</Form.Label>
+          Email: {user.email}
+          <p />
+          <Form.Label>
+            First name: {user.firstName || 'No first name'}
+          </Form.Label>
           <InputGroup className="mb-3">
             <Form.Control
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
+              placeholder="Your new first name"
+              value={firstName}
+              onChange={handleFirstNameChange}
             />
           </InputGroup>
-          <p />
-          <Form.Label>Name: {user.name || 'No name'}</Form.Label>
+          <Form.Label>Last name: {user.lastName || 'No last name'}</Form.Label>
           <InputGroup className="mb-3">
             <Form.Control
-              placeholder="Your new username"
-              value={name}
-              onChange={handleNameChange}
+              placeholder="Your new last name"
+              value={lastName}
+              onChange={handleLastNameChange}
             />
           </InputGroup>
           <Button variant="outline-secondary" onClick={handleSave}>
             Save Changes
           </Button>
           <p />
-          Email: {user.email}
+          <Button variant="outline-secondary" onClick={handlePasswordReset}>
+            Reset Password
+          </Button>
         </Col>
         <Col></Col>
       </Row>
