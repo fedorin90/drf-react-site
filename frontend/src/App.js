@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { useCookies } from 'react-cookie'
@@ -18,8 +18,11 @@ function App() {
   }
   const [user, setUser] = useState(defaultUser)
   const [cookies, setCookie] = useCookies(['auth_token'])
+  const [isFetchingUser, setIsFetchingUser] = useState(false)
 
-  const fetchUser = async () => {
+  const fetchUser = async (token = cookies.auth_token) => {
+    if (!token || isFetchingUser) return
+    setIsFetchingUser(true)
     try {
       const response = await api.get('auth/users/me/')
       setUser({
@@ -27,21 +30,26 @@ function App() {
         firstName: response.data.first_name,
         lastName: response.data.last_name,
         isDefault: false,
-      }) // Устанавливаем пользователя
+      })
     } catch (err) {
-      //TODO добавить обработчкик 401
+      console.error('Ошибка при запросе пользователя:', err)
+
       setUser(defaultUser)
+    } finally {
+      setIsFetchingUser(false)
     }
   }
 
   useEffect(() => {
-    fetchUser() // Загружаем пользователя при запуске приложения
-  }, [])
+    if (cookies.auth_token && user.isDefault && !isFetchingUser) {
+      fetchUser()
+    }
+  }, [cookies.auth_token])
 
   const handleLogout = async () => {
     try {
       await api.post('auth/token/logout/')
-      setCookie('auth_token', '', { path: '/' }) // Очистить куки
+      setCookie('auth_token', '', { path: '/' })
       setUser(defaultUser)
       toast.info('Logged out')
     } catch (err) {
@@ -61,11 +69,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/login"
-          element={
-            <Login setCookie={setCookie} user={user} fetchUser={fetchUser} />
-          }
+          element={<Login setCookie={setCookie} fetchUser={fetchUser} />}
         />
-        {/* <Route path="/verify/:token" element={<VerifyEmail />} /> */}
+        <Route path="/activate/:uid/:token/" element={<VerifyEmail />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Routes>
       <ToastContainer position="top-center" />

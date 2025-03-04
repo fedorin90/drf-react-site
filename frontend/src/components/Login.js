@@ -23,7 +23,7 @@ const style = {
   },
 }
 
-const Login = ({ fetchUser, setCookie, user }) => {
+const Login = ({ setCookie }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -38,14 +38,13 @@ const Login = ({ fetchUser, setCookie, user }) => {
       })
 
       const token = response.data.auth_token
-      console.log('Auth token:', token) // Проверяем токен
       setCookie('auth_token', token, {
         path: '/',
         maxAge: 7 * 24 * 60 * 60, // 7 days
         secure: false,
         sameSite: 'Strict',
       })
-      await fetchUser()
+
       toast.success(`Login successfull! Welcome, ${email}`)
       navigate('/')
     } catch (err) {

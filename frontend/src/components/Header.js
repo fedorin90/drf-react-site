@@ -9,16 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 const Header = ({ user, logout }) => {
   const navigate = useNavigate()
-  // const location = useLocation()
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search)
-  //   const loginStatus = params.get('login')
-  //   const email = params.get('email')
-  //   if (loginStatus === 'success') {
-  //     toast.success(`Login successfull! Welcome, ${email}`)
-  //   }
-  // }, [location])
 
   const handleLogout = () => {
     logout()

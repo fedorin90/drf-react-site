@@ -1,29 +1,36 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axios'
 import { toast } from 'react-toastify'
 
 const VerifyEmail = () => {
-  const { token } = useParams() // Получаем userId из URL.
+  const { uid, token } = useParams()
 
   const navigate = useNavigate()
 
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5050/verify/${token}` // Запрос к серверу.
-        )
-        toast.success(response.data.message) // Устанавливаем успешное сообщение.
+        const response = await api.post('auth/users/activation/', {
+          uid,
+          token,
+        })
+
+        toast.success('Activation successfull! Please log in.')
         navigate('/login')
-      } catch (err) {
-        toast.error(err.response?.data?.error || 'Something went wrong') // Устанавливаем сообщение об ошибке.
+      } catch (error) {
+        if (error.response) {
+          console.log('Error status:', error.response.status) // HTTP статус ошибки
+          console.log('Error detail:', error.response.data.detail) // Текст ошибки из `detail`
+        } else {
+          console.error('Request failed:', error.message)
+        }
         navigate('/')
       }
     }
 
-    verifyEmail() // Вызываем функцию при загрузке компонента.
-  }, [token, navigate])
+    verifyEmail()
+  }, [token, uid, navigate])
 
   return <div></div>
 }
