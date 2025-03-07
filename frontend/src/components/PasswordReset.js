@@ -1,120 +1,61 @@
 import { useState } from 'react'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
 import api from '../api/axios'
 import { toast } from 'react-toastify'
-import { validatePassword, validateEmail } from '../utils/validate'
+import { validatePassword } from '../utils/validate'
 
-const Register = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [rePassword, setRePassword] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+const PasswordReset = () => {
+  const { uid, token } = useParams()
+  const [newPassword, setNewPassword] = useState('')
+  const [reNewPassword, setReNewPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showRePassword, setShowRePassword] = useState(false)
   const navigate = useNavigate()
 
-  const validation = validatePassword(password)
-  const isEmailValid = validateEmail(email)
+  const validation = validatePassword(newPassword)
   const isPasswordValid = Object.values(validation).every(Boolean)
-  const isRePasswordValid = password === rePassword
+  const isRePasswordValid = newPassword === reNewPassword
 
-  const isValid = isEmailValid && isPasswordValid && isRePasswordValid
+  const isValid = isPasswordValid && isRePasswordValid
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await api.post('auth/users/', {
-        email,
-        password,
-        re_password: rePassword,
-        first_name: firstName,
-        last_name: lastName,
+      const response = await api.post('auth/users/reset_password_confirm/', {
+        uid,
+        token,
+        new_password: newPassword,
+        re_new_password: reNewPassword,
       })
-      toast.info(`Please confirm your email  "${response.data.email}"`)
-      navigate('/login')
+      toast.info('Password changed successfully!')
+      navigate('/')
     } catch (err) {
-      toast.error(err.response.data.error || 'Registration failed')
+      toast.error('Password reset failed')
     }
   }
+
   return (
     <Container className="mt-5">
       <Row>
         <Col></Col>
         <Col xs={4}>
-          <h1>Register</h1>
+          <h1>Password reset</h1>
           <Form onSubmit={handleSubmit}>
-            {/* Email */}
-            <Form.Group className="mb-3">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{
-                  borderColor: email
-                    ? isEmailValid
-                      ? 'green'
-                      : 'red'
-                    : '#ccc',
-                }}
-              />
-              {email && (
-                <Form.Text style={{ color: isEmailValid ? 'green' : 'red' }}>
-                  {isEmailValid ? (
-                    <>
-                      <FaCheck /> Valid email
-                    </>
-                  ) : (
-                    <>
-                      <FaTimes /> Invalid email format
-                    </>
-                  )}
-                </Form.Text>
-              )}
-            </Form.Group>
-
-            {/* FirstName */}
-            <Form.Group className="mb-3">
-              <Form.Label>First name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your first name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            {/* LastName */}
-            <Form.Group className="mb-3">
-              <Form.Label>Last name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
-            </Form.Group>
-
             {/* Password */}
             <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>New password</Form.Label>
               <InputGroup>
                 <Form.Control
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   required
                   style={{
-                    borderColor: password
+                    borderColor: newPassword
                       ? isPasswordValid
                         ? 'green'
                         : 'red'
@@ -128,7 +69,7 @@ const Register = () => {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </InputGroup.Text>
               </InputGroup>
-              {password && (
+              {newPassword && (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   <li style={{ color: validation.length ? 'green' : 'red' }}>
                     {validation.length ? <FaCheck /> : <FaTimes />} At least 8
@@ -157,16 +98,16 @@ const Register = () => {
 
             {/* Confirm Password (re_password) */}
             <Form.Group className="mb-3">
-              <Form.Label>Confirm Password</Form.Label>
+              <Form.Label>Confirm new password</Form.Label>
               <InputGroup>
                 <Form.Control
                   type={showRePassword ? 'text' : 'password'}
                   placeholder="Re-enter your password"
-                  value={rePassword}
-                  onChange={(e) => setRePassword(e.target.value)}
+                  value={reNewPassword}
+                  onChange={(e) => setReNewPassword(e.target.value)}
                   required
                   style={{
-                    borderColor: rePassword
+                    borderColor: reNewPassword
                       ? isRePasswordValid
                         ? 'green'
                         : 'red'
@@ -180,7 +121,7 @@ const Register = () => {
                   {showRePassword ? <FaEyeSlash /> : <FaEye />}
                 </InputGroup.Text>
               </InputGroup>
-              {rePassword && (
+              {reNewPassword && (
                 <Form.Text
                   style={{ color: isRePasswordValid ? 'green' : 'red' }}
                 >
@@ -192,27 +133,6 @@ const Register = () => {
               )}
             </Form.Group>
 
-            {/* Terms and Conditions */}
-            <Form.Group className="mb-3">
-              <Form.Check
-                type="checkbox"
-                label={
-                  <>
-                    I accept the{' '}
-                    <a
-                      href="/terms-and-conditions"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Terms and Conditions
-                    </a>
-                    .
-                  </>
-                }
-                required
-              />
-            </Form.Group>
-
             {/* Submit Button */}
             <Button
               variant="primary"
@@ -220,7 +140,7 @@ const Register = () => {
               disabled={!isValid}
               style={{ background: isValid ? '#007bff' : 'gray' }}
             >
-              Create account
+              Change password
             </Button>
           </Form>
         </Col>
@@ -230,4 +150,4 @@ const Register = () => {
   )
 }
 
-export default Register
+export default PasswordReset

@@ -10,6 +10,7 @@ import Login from './components/Login'
 import Register from './components/Register'
 import VerifyEmail from './components/VerifyEmail'
 import TermsAndConditions from './components/TermsAndConditions'
+import PasswordReset from './components/PasswordReset'
 
 function App() {
   const defaultUser = {
@@ -72,6 +73,10 @@ function App() {
           element={<Login setCookie={setCookie} fetchUser={fetchUser} />}
         />
         <Route path="/activate/:uid/:token/" element={<VerifyEmail />} />
+        <Route
+          path="/password-reset/:uid/:token/"
+          element={<PasswordReset />}
+        />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Routes>
       <ToastContainer position="top-center" />
