@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { useCookies } from 'react-cookie'
-import api from './api/axios'
+import { api } from './api/axios'
 import Header from './components/Header'
 import Welcome from './components/Welcome'
 import Profile from './components/Profile'
@@ -68,10 +68,7 @@ function App() {
           element={<Profile user={user} fetchUser={fetchUser} />}
         />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/login"
-          element={<Login setCookie={setCookie} fetchUser={fetchUser} />}
-        />
+        <Route path="/login" element={<Login setCookie={setCookie} />} />
         <Route path="/activate/:uid/:token/" element={<VerifyEmail />} />
         <Route
           path="/password-reset/:uid/:token/"

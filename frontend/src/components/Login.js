@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { FcGoogle } from 'react-icons/fc'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import { toast } from 'react-toastify'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
-import api from '../api/axios'
+import { api, loginWithGoogle } from '../api/axios'
+
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 
 const style = {
   divider: {
@@ -52,9 +54,21 @@ const Login = ({ setCookie }) => {
     }
   }
 
-  // const handleGoogleLogin = () => {
-  //   window.location.href = 'http://localhost:5050/google-login'
-  // }
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const token = await loginWithGoogle(credentialResponse.credential)
+      await setCookie('auth_token', token, {
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60, // 7 days
+        secure: false,
+        sameSite: 'Strict',
+      })
+      navigate('/')
+      toast.success(`Login successfull! Welcome!`)
+    } catch (error) {
+      toast.error(error || 'Something went wrong, login failed')
+    }
+  }
 
   return (
     <Container className="mt-5">
@@ -105,14 +119,9 @@ const Login = ({ setCookie }) => {
                 <div style={style.line}></div>
               </div>
             </Form.Text>
-            {/* <Button
-              onClick={handleGoogleLogin}
-              variant="outline-dark"
-              style={{ width: '100%' }}
-            >
-              <FcGoogle className="mb-1" style={{ fontSize: '24px' }} />{' '}
-              Continue with Google
-            </Button> */}
+            <GoogleOAuthProvider clientId={googleClientId}>
+              <GoogleLogin onSuccess={handleGoogleSuccess} />
+            </GoogleOAuthProvider>
           </Form>
         </Col>
         <Col></Col>

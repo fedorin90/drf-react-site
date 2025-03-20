@@ -32,11 +32,25 @@ api.interceptors.response.use(
   }
 )
 
-// Подавляем все сетевые ошибки с кодом 401 в консоли
 window.addEventListener('unhandledrejection', (event) => {
   if (event.reason?.response?.status === 401) {
-    event.preventDefault() // Останавливаем логирование
+    event.preventDefault()
   }
 })
 
-export default api
+const loginWithGoogle = async (googleAccessToken) => {
+  try {
+    const response = await axios.post(
+      'http://127.0.0.1:8000/api/auth/google/',
+      {
+        access_token: googleAccessToken,
+      }
+    )
+
+    return response.data.access_token
+  } catch (error) {
+    console.error('Google login error:', error)
+  }
+}
+
+export { api, loginWithGoogle }

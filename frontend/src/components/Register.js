@@ -3,7 +3,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
-import api from '../api/axios'
+import { api } from '../api/axios'
 import { toast } from 'react-toastify'
 import { validatePassword, validateEmail } from '../utils/validate'
 

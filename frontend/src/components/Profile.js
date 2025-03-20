@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 import { Col, Row, Form, InputGroup, Button, Container } from 'react-bootstrap'
-import api from '../api/axios'
+import { api } from '../api/axios'
 
 const Profile = ({ user, fetchUser }) => {
   const [firstName, setFirstName] = useState(user.firstName || '')

@@ -25,6 +25,11 @@ load_dotenv(dotenv_path)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
+# GOOGLE AUTH
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "oauth2_provider",
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
@@ -51,11 +57,15 @@ INSTALLED_APPS = [
 # Настройки DRF
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
+}
+
+OAUTH2_PROVIDER = {
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,
+    "ALLOW_PUBLIC_CLIENTS": True,
+    "SCOPES": {"read": "Read scope", "write": "Write scope"},
 }
 
 DOMAIN = os.getenv("FRONTEND_URL")
@@ -64,6 +74,7 @@ SITE_NAME = os.getenv("SITE_NAME")
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SERIALIZERS": {
+        "user_create": "users.serializers.UserSerializer",
         "user": "users.serializers.UserSerializer",
         "current_user": "users.serializers.UserSerializer",
     },
@@ -97,6 +108,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
 CORS_ALLOW_CREDENTIALS = True  # Разрешаем отправку cookies
 
