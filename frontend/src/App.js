@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { useCookies } from 'react-cookie'
 import { api } from './api/axios'
+import TodoApp from './components/Todo/TodoApp'
 import Header from './components/Header'
 import Welcome from './components/Welcome'
 import Profile from './components/Profile'
@@ -62,6 +63,7 @@ function App() {
     <Router>
       <Header user={user} logout={handleLogout} />
       <Routes>
+        <Route path="/todo" element={<TodoApp />} />
         <Route path="/" element={<Welcome user={user} />} />
         <Route
           path="/profile"

@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
 import { Container, Navbar } from 'react-bootstrap'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
-import { toast } from 'react-toastify'
+import { LuListTodo } from 'react-icons/lu'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Nav from 'react-bootstrap/Nav'
 import { ReactComponent as Logo } from '../images/logo.svg'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -22,6 +22,11 @@ const Header = ({ user, logout }) => {
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end me-2">
+          <Nav className="me-auto">
+            <Nav.Link href="/todo" style={{ fontSize: '30px', color: 'teal' }}>
+              Todo app <LuListTodo />
+            </Nav.Link>
+          </Nav>
           {!user.isDefault ? (
             <Navbar.Text>
               Signed in as: <a href="/profile">{user.email}</a>
