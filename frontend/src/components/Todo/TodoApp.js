@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
+
 import {
   Container,
   Button,
@@ -9,25 +11,51 @@ import {
   ButtonGroup,
 } from 'react-bootstrap'
 import { RiDeleteBin2Line, RiRefreshLine } from 'react-icons/ri'
-import { v4 as uuidv4 } from 'uuid'
 import TodoList from './Todos/TodoList'
 import styles from './Todos/Todo.module.css'
+import {
+  fetchTodos,
+  createTodo,
+  updateTodo,
+  deleteTodo,
+  deleteAllTodos,
+  deleteCompletedTodos,
+} from '../../api/todoService'
 
 function Todo() {
   const [inputValue, setInputValue] = useState('')
   const [todos, setTodos] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const addTodoHandler = (text) => {
-    const newTodo = {
-      text: text,
-      isCompleted: false,
-      id: uuidv4(),
+  useEffect(() => {
+    const getSavedTodos = async () => {
+      try {
+        const res = await fetchTodos()
+        setTodos(res || [])
+        toast.success('Saved todos successfully dowloaded')
+      } catch (error) {
+        toast.error(error.message)
+      }
     }
-    setTodos([...todos, newTodo])
+    getSavedTodos()
+  }, [])
+
+  const addTodoHandler = async (text) => {
+    try {
+      const newTodo = await createTodo(text)
+      setTodos([...todos, newTodo])
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   const deleteTodoHandler = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
+    try {
+      deleteTodo(id)
+      setTodos(todos.filter((todo) => todo.id !== id))
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   const onSubmitHandler = (event) => {
@@ -36,23 +64,32 @@ function Todo() {
     setInputValue('')
   }
 
-  const toggleTodoHandler = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, isCompleted: !todo.isCompleted }
-          : { ...todo }
-      )
-    )
+  const toggleTodoHandler = async (id, isCompleted) => {
+    const updatedTodo = await updateTodo(id, !isCompleted)
+    setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)))
   }
 
-  const resetTodoHandler = () => setTodos([])
+  const resetTodoHandler = () => {
+    try {
+      deleteAllTodos()
+      setTodos([])
+      toast.success('All todos successfully deleted')
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   const deleteCompletedTodosHandler = () => {
-    setTodos(todos.filter((todo) => !todo.isCompleted))
+    try {
+      deleteCompletedTodos()
+      toast.success('Completed todos deleted successfully')
+      setTodos(todos.filter((todo) => !todo.is_completed))
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
-  const completedTodoCount = todos.filter((todo) => todo.isCompleted).length
+  const completedTodoCount = todos.filter((todo) => todo.is_completed).length
 
   return (
     <Container className="mt-5">

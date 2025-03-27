@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+from .models import ToDo
+
 User = get_user_model()
 
 
@@ -33,3 +35,10 @@ class GoogleAuthSerializer(serializers.Serializer):
         token, _ = Token.objects.get_or_create(user=user)  # pylint: disable=no-member
 
         return token.key
+
+
+class ToDoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToDo
+        fields = "__all__"
+        read_only_fields = ("user",)

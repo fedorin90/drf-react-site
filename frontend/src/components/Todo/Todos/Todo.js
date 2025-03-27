@@ -6,7 +6,7 @@ function Todo({ todo, deleteTodo, toggleTodo }) {
   return (
     <div
       className={`${styles.todo} ${
-        todo.isCompleted ? styles.completedTodo : ''
+        todo.is_completed ? styles.completedTodo : ''
       }`}
     >
       <RiTodoFill className={styles.todoIcon} />
@@ -18,7 +18,9 @@ function Todo({ todo, deleteTodo, toggleTodo }) {
       />
       <FaCheck
         className={styles.checkIcon}
-        onClick={() => toggleTodo(todo.id)}
+        onClick={() => {
+          toggleTodo(todo.id, todo.is_completed)
+        }}
         style={{ fontSize: '40px' }}
       />
     </div>
