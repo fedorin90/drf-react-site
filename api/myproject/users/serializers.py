@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from .models import ToDo
+from .models import ToDo, Image
 
 User = get_user_model()
 
@@ -40,5 +40,12 @@ class GoogleAuthSerializer(serializers.Serializer):
 class ToDoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ToDo
+        fields = "__all__"
+        read_only_fields = ("user",)
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
         fields = "__all__"
         read_only_fields = ("user",)

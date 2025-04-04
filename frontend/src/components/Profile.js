@@ -7,8 +7,6 @@ const Profile = ({ user, fetchUser }) => {
   const [firstName, setFirstName] = useState(user.firstName || '')
   const [lastName, setLastName] = useState(user.lastName || '')
 
-  const [selectedFile, setSelectedFile] = useState(null)
-
   const handleFirstNameChange = (e) => setFirstName(e.target.value)
   const handleLastNameChange = (e) => setLastName(e.target.value)
 

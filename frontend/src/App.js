@@ -12,6 +12,7 @@ import Register from './components/Register'
 import VerifyEmail from './components/VerifyEmail'
 import TermsAndConditions from './components/TermsAndConditions'
 import PasswordReset from './components/PasswordReset'
+import ImagesGallery from './components/Images-Gallery/ImagesGallery'
 
 function App() {
   const defaultUser = {
@@ -64,6 +65,7 @@ function App() {
       <Header user={user} logout={handleLogout} />
       <Routes>
         <Route path="/todo" element={<TodoApp />} />
+        <Route path="/images-gallery" element={<ImagesGallery />} />
         <Route path="/" element={<Welcome user={user} />} />
         <Route
           path="/profile"

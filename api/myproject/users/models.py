@@ -53,3 +53,16 @@ class ToDo(models.Model):
 
     def __str__(self):
         return str(self.text)
+
+
+class Image(models.Model):
+    title = models.CharField(null=True, max_length=250)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    unsplash_id = models.CharField(null=True, blank=True)
+    url = models.URLField()
+    description = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.CharField(null=True, max_length=250)
+    author_url = models.URLField(null=True)
+
+    objects = models.Manager()

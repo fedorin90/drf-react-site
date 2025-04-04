@@ -30,6 +30,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
+# UNSPLASH
+UNSPLASH_URL = "https://api.unsplash.com/photos/random"
+UNSPLASH_KEY = os.getenv("UNSPLASH_KEY", "")
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

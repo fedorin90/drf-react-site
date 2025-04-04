@@ -2,6 +2,7 @@ import { Container, Navbar } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import { LuListTodo } from 'react-icons/lu'
+import { FaRegImages } from 'react-icons/fa'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Nav from 'react-bootstrap/Nav'
 import { ReactComponent as Logo } from '../images/logo.svg'
@@ -23,8 +24,14 @@ const Header = ({ user, logout }) => {
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end me-2">
           <Nav className="me-auto">
-            <Nav.Link href="/todo" style={{ fontSize: '30px', color: 'teal' }}>
+            <Nav.Link href="/todo" style={{ fontSize: '20px', color: 'teal' }}>
               Todo app <LuListTodo />
+            </Nav.Link>
+            <Nav.Link
+              href="/images-gallery"
+              style={{ fontSize: '20px', color: '#FF8C00' }}
+            >
+              Images Gallery <FaRegImages />
             </Nav.Link>
           </Nav>
           {!user.isDefault ? (
