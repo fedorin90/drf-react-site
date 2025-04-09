@@ -11,6 +11,7 @@ python-dotenv = "*"
 djoser = "*"
 django-cors-headers = "*"
 django-oauth-toolkit = "*"
+pillow = "*"
 
 [dev-packages]
 

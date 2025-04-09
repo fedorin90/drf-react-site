@@ -140,6 +140,13 @@ TEMPLATES = [
 WSGI_APPLICATION = "myproject.wsgi.application"
 
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.0/howto/static-files/
+
+
+MEDIA_ROOT = "/code/media"
+MEDIA_URL = "/media/"
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 

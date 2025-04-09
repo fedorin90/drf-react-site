@@ -32,6 +32,7 @@ function App() {
         email: response.data.email,
         firstName: response.data.first_name,
         lastName: response.data.last_name,
+        avatar: response.data.avatar,
         isDefault: false,
       })
     } catch (err) {

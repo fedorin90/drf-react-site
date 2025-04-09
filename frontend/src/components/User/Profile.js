@@ -1,25 +1,50 @@
 import { toast } from 'react-toastify'
-import { useState } from 'react'
-import { Col, Row, Form, InputGroup, Button, Container } from 'react-bootstrap'
+import { useState, useEffect } from 'react'
+import {
+  Col,
+  Row,
+  Form,
+  InputGroup,
+  Button,
+  Container,
+  Image,
+} from 'react-bootstrap'
 import { api } from '../../api/axios'
 
 const Profile = ({ user, fetchUser }) => {
-  const [firstName, setFirstName] = useState(user.firstName || '')
-  const [lastName, setLastName] = useState(user.lastName || '')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [avatar, setAvatar] = useState(null)
 
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName || '')
+      setLastName(user.lastName || '')
+    }
+  }, [user])
+
+  const handleAvatarChange = (e) => {
+    setAvatar(e.target.files[0])
+  }
   const handleFirstNameChange = (e) => setFirstName(e.target.value)
   const handleLastNameChange = (e) => setLastName(e.target.value)
 
-  const handleSave = async () => {
+  const handleSubmit = async () => {
     try {
       const formData = {
         first_name: firstName,
         last_name: lastName,
+        avatar: avatar,
       }
-      await api.patch('auth/users/me/', formData)
+      await api.patch('auth/users/me/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       fetchUser()
       toast.success('Profile updated!')
     } catch (error) {
+      console.log(error)
       toast.error('Error updating profile:', error)
     }
   }
@@ -41,6 +66,9 @@ const Profile = ({ user, fetchUser }) => {
         <Col></Col>
         <Col xs={4}>
           <h1>Profile</h1>
+          <Image src={user.avatar} thumbnail />
+          <Form.Label>Input a new avatar</Form.Label>
+          <Form.Control type="file" onChange={handleAvatarChange} />
           <p />
           Email: {user.email}
           <p />
@@ -62,7 +90,7 @@ const Profile = ({ user, fetchUser }) => {
               onChange={handleLastNameChange}
             />
           </InputGroup>
-          <Button variant="outline-secondary" onClick={handleSave}>
+          <Button variant="outline-secondary" onClick={handleSubmit}>
             Save Changes
           </Button>
           <p />
