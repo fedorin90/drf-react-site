@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import { toast } from 'react-toastify'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
-import { api, loginWithGoogle } from '../api/axios'
+import { api, loginWithGoogle } from '../../api/axios'
 
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 

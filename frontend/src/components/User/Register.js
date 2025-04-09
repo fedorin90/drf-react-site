@@ -1,61 +1,120 @@
 import { useState } from 'react'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
-import { api } from '../api/axios'
+import { api } from '../../api/axios'
 import { toast } from 'react-toastify'
-import { validatePassword } from '../utils/validate'
+import { validatePassword, validateEmail } from '../../utils/validate'
 
-const PasswordReset = () => {
-  const { uid, token } = useParams()
-  const [newPassword, setNewPassword] = useState('')
-  const [reNewPassword, setReNewPassword] = useState('')
+const Register = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [rePassword, setRePassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showRePassword, setShowRePassword] = useState(false)
   const navigate = useNavigate()
 
-  const validation = validatePassword(newPassword)
+  const validation = validatePassword(password)
+  const isEmailValid = validateEmail(email)
   const isPasswordValid = Object.values(validation).every(Boolean)
-  const isRePasswordValid = newPassword === reNewPassword
+  const isRePasswordValid = password === rePassword
 
-  const isValid = isPasswordValid && isRePasswordValid
+  const isValid = isEmailValid && isPasswordValid && isRePasswordValid
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await api.post('auth/users/reset_password_confirm/', {
-        uid,
-        token,
-        new_password: newPassword,
-        re_new_password: reNewPassword,
+      const response = await api.post('auth/users/', {
+        email,
+        password,
+        re_password: rePassword,
+        first_name: firstName,
+        last_name: lastName,
       })
-      toast.info('Password changed successfully!')
-      navigate('/')
+      toast.info(`Please confirm your email  "${response.data.email}"`)
+      navigate('/login')
     } catch (err) {
-      toast.error('Password reset failed')
+      toast.error(err.response.data.error || 'Registration failed')
     }
   }
-
   return (
     <Container className="mt-5">
       <Row>
         <Col></Col>
         <Col xs={4}>
-          <h1>Password reset</h1>
+          <h1>Register</h1>
           <Form onSubmit={handleSubmit}>
+            {/* Email */}
+            <Form.Group className="mb-3">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  borderColor: email
+                    ? isEmailValid
+                      ? 'green'
+                      : 'red'
+                    : '#ccc',
+                }}
+              />
+              {email && (
+                <Form.Text style={{ color: isEmailValid ? 'green' : 'red' }}>
+                  {isEmailValid ? (
+                    <>
+                      <FaCheck /> Valid email
+                    </>
+                  ) : (
+                    <>
+                      <FaTimes /> Invalid email format
+                    </>
+                  )}
+                </Form.Text>
+              )}
+            </Form.Group>
+
+            {/* FirstName */}
+            <Form.Group className="mb-3">
+              <Form.Label>First name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter your first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </Form.Group>
+
+            {/* LastName */}
+            <Form.Group className="mb-3">
+              <Form.Label>Last name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </Form.Group>
+
             {/* Password */}
             <Form.Group className="mb-3">
-              <Form.Label>New password</Form.Label>
+              <Form.Label>Password</Form.Label>
               <InputGroup>
                 <Form.Control
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   style={{
-                    borderColor: newPassword
+                    borderColor: password
                       ? isPasswordValid
                         ? 'green'
                         : 'red'
@@ -69,7 +128,7 @@ const PasswordReset = () => {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </InputGroup.Text>
               </InputGroup>
-              {newPassword && (
+              {password && (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   <li style={{ color: validation.length ? 'green' : 'red' }}>
                     {validation.length ? <FaCheck /> : <FaTimes />} At least 8
@@ -98,16 +157,16 @@ const PasswordReset = () => {
 
             {/* Confirm Password (re_password) */}
             <Form.Group className="mb-3">
-              <Form.Label>Confirm new password</Form.Label>
+              <Form.Label>Confirm Password</Form.Label>
               <InputGroup>
                 <Form.Control
                   type={showRePassword ? 'text' : 'password'}
                   placeholder="Re-enter your password"
-                  value={reNewPassword}
-                  onChange={(e) => setReNewPassword(e.target.value)}
+                  value={rePassword}
+                  onChange={(e) => setRePassword(e.target.value)}
                   required
                   style={{
-                    borderColor: reNewPassword
+                    borderColor: rePassword
                       ? isRePasswordValid
                         ? 'green'
                         : 'red'
@@ -121,7 +180,7 @@ const PasswordReset = () => {
                   {showRePassword ? <FaEyeSlash /> : <FaEye />}
                 </InputGroup.Text>
               </InputGroup>
-              {reNewPassword && (
+              {rePassword && (
                 <Form.Text
                   style={{ color: isRePasswordValid ? 'green' : 'red' }}
                 >
@@ -133,6 +192,27 @@ const PasswordReset = () => {
               )}
             </Form.Group>
 
+            {/* Terms and Conditions */}
+            <Form.Group className="mb-3">
+              <Form.Check
+                type="checkbox"
+                label={
+                  <>
+                    I accept the{' '}
+                    <a
+                      href="/terms-and-conditions"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Terms and Conditions
+                    </a>
+                    .
+                  </>
+                }
+                required
+              />
+            </Form.Group>
+
             {/* Submit Button */}
             <Button
               variant="primary"
@@ -140,7 +220,7 @@ const PasswordReset = () => {
               disabled={!isValid}
               style={{ background: isValid ? '#007bff' : 'gray' }}
             >
-              Change password
+              Create account
             </Button>
           </Form>
         </Col>
@@ -150,4 +230,4 @@ const PasswordReset = () => {
   )
 }
 
-export default PasswordReset
+export default Register

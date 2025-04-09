@@ -6,12 +6,12 @@ import { api } from './api/axios'
 import TodoApp from './components/Todo/TodoApp'
 import Header from './components/Header'
 import Welcome from './components/Welcome'
-import Profile from './components/Profile'
-import Login from './components/Login'
-import Register from './components/Register'
-import VerifyEmail from './components/VerifyEmail'
+import Profile from './components/User/Profile'
+import Login from './components/User/Login'
+import Register from './components/User/Register'
+import VerifyEmail from './components/User/VerifyEmail'
 import TermsAndConditions from './components/TermsAndConditions'
-import PasswordReset from './components/PasswordReset'
+import PasswordReset from './components/User/PasswordReset'
 import ImagesGallery from './components/Images-Gallery/ImagesGallery'
 
 function App() {
@@ -80,7 +80,7 @@ function App() {
         />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Routes>
-      <ToastContainer position="top-center" />
+      <ToastContainer hideProgressBar position="top-center" />
     </Router>
   )
 }

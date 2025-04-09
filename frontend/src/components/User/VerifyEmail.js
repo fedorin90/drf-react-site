@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { api } from '../api/axios'
+import { api } from '../../api/axios'
 import { toast } from 'react-toastify'
 
 const VerifyEmail = () => {

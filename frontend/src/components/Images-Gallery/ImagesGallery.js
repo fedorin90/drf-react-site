@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Search from './Search'
 import ImageCard from './ImageCard'
 import Welcome from './Welcome'
-import Spinner from './Spinner'
+import Spinner from '../Spinner'
 import {
   getImage,
   saveImage,

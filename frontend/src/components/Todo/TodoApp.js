@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
+import Spinner from '../Spinner'
 
 import {
   Container,
@@ -29,12 +30,14 @@ function Todo() {
 
   useEffect(() => {
     const getSavedTodos = async () => {
+      setLoading(true)
       try {
         const res = await fetchTodos()
         setTodos(res || [])
-        toast.success('Saved todos successfully dowloaded')
       } catch (error) {
         toast.error(error.message)
+      } finally {
+        setLoading(false)
       }
     }
     getSavedTodos()
@@ -132,17 +135,22 @@ function Todo() {
               </Button>
             </ButtonGroup>
           )}
+          {loading ? (
+            <Spinner />
+          ) : (
+            <>
+              <TodoList
+                todo={todos}
+                deleteTodo={deleteTodoHandler}
+                toggleTodo={toggleTodoHandler}
+              />
 
-          <TodoList
-            todo={todos}
-            deleteTodo={deleteTodoHandler}
-            toggleTodo={toggleTodoHandler}
-          />
-
-          {completedTodoCount > 0 && (
-            <h2>{`You have completed ${completedTodoCount} ${
-              completedTodoCount > 1 ? 'todos' : 'todo'
-            }`}</h2>
+              {completedTodoCount > 0 && (
+                <h2>{`You have completed ${completedTodoCount} ${
+                  completedTodoCount > 1 ? 'todos' : 'todo'
+                }`}</h2>
+              )}
+            </>
           )}
         </Col>
         <Col></Col>
