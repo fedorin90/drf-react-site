@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import AuthContext from '../../context/AuthContext'
 import {
   Col,
   Row,
@@ -11,7 +12,8 @@ import {
 } from 'react-bootstrap'
 import { api } from '../../api/axios'
 
-const Profile = ({ user, fetchUser }) => {
+const Profile = () => {
+  const { user, fetchUser } = useContext(AuthContext)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [avatar, setAvatar] = useState(null)

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import { toast } from 'react-toastify'
 import { Container, Button, Form, Row, Col, InputGroup } from 'react-bootstrap'
+import AuthContext from '../../context/AuthContext'
 import { api, loginWithGoogle } from '../../api/axios'
 
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
@@ -25,7 +26,9 @@ const style = {
   },
 }
 
-const Login = ({ setCookie }) => {
+const Login = () => {
+  const { setCookie } = useContext(AuthContext)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

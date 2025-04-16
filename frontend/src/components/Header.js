@@ -8,12 +8,15 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Nav from 'react-bootstrap/Nav'
 import { ReactComponent as Logo } from '../images/logo.svg'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { useContext } from 'react'
+import AuthContext from '../context/AuthContext'
 
-const Header = ({ user, logout }) => {
+const Header = () => {
+  const { user, logoutUser } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout()
+    logoutUser()
     navigate('/login')
   }
   return (
