@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from .models import ToDo, Image
+from .models import ToDo, Image, ChatMessage
 
 User = get_user_model()
 
@@ -38,6 +38,7 @@ class GoogleAuthSerializer(serializers.Serializer):
 
 
 class ToDoSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ToDo
         fields = "__all__"
@@ -45,7 +46,27 @@ class ToDoSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Image
         fields = "__all__"
         read_only_fields = ("user",)
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    sender_profile = UserSerializer(read_only=True)
+    reciever_profile = UserSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = [
+            "id",
+            "user",
+            "sender",
+            "sender_profile",
+            "reciever",
+            "reciever_profile",
+            "message",
+            "is_read",
+            "date",
+        ]

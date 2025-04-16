@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+
 from django.db import models
 
 
@@ -67,3 +68,35 @@ class Image(models.Model):
     author_url = models.URLField(null=True)
 
     objects = models.Manager()
+
+
+class ChatMessage(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
+    )
+    sender = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="sender"
+    )
+    reciever = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="reciever"
+    )
+    message = models.CharField(max_length=1000)
+    is_read = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["date"]
+        verbose_name_plural = "Message"
+
+    def __str__(self):
+        return f"{self.sender} - {self.reciever}"
+
+    @property
+    def sender_profile(self):
+        sender_profile = CustomUser.objects.get(email=self.sender.email)
+        return sender_profile
+
+    @property
+    def reciever_profile(self):
+        reciever_profile = CustomUser.objects.get(email=self.reciever.email)
+        return reciever_profile

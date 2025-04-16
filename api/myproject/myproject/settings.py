@@ -78,6 +78,9 @@ SITE_NAME = os.getenv("SITE_NAME")
 
 DJOSER = {
     "LOGIN_FIELD": "email",
+    "PERMISSIONS": {
+        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
+    },
     "SERIALIZERS": {
         "user_create": "users.serializers.UserSerializer",
         "user": "users.serializers.UserSerializer",

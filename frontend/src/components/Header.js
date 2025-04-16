@@ -24,29 +24,31 @@ const Header = ({ user, logout }) => {
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end me-2">
-          <Nav className="me-auto">
-            <Nav.Link href="/todo" style={{ fontSize: '20px' }}>
-              <LuListTodo />
-              Todo
-            </Nav.Link>
-            <Nav.Link href="/images-gallery" style={{ fontSize: '20px' }}>
-              <FaRegImages /> Images Gallery
-            </Nav.Link>
-
-            <Nav.Link href="/inbox" style={{ fontSize: '20px' }}>
-              <MdOutlineForwardToInbox /> Inbox
-            </Nav.Link>
-          </Nav>
-          {!user.isDefault ? (
-            <Navbar.Text>
-              Signed in as: <a href="/profile">{user.email}</a>
-            </Navbar.Text>
-          ) : (
+          {user.isDefault ? (
             <Navbar.Text>Not signed in</Navbar.Text>
+          ) : (
+            <>
+              <Nav className="me-auto">
+                <Nav.Link href="/todo" style={{ fontSize: '20px' }}>
+                  <LuListTodo />
+                  Todo
+                </Nav.Link>
+                <Nav.Link href="/images-gallery" style={{ fontSize: '20px' }}>
+                  <FaRegImages /> Images Gallery
+                </Nav.Link>
+
+                <Nav.Link href="/inbox" style={{ fontSize: '20px' }}>
+                  <MdOutlineForwardToInbox /> Inbox
+                </Nav.Link>
+              </Nav>
+              <Navbar.Text>
+                Signed in as: <a href="/profile">{user.email}</a>
+              </Navbar.Text>
+            </>
           )}
         </Navbar.Collapse>
         <ButtonGroup aria-label="auth func">
-          {user.isDefault && (
+          {user.isDefault ? (
             <>
               <Button href="/login" variant="secondary">
                 Log in
@@ -55,8 +57,7 @@ const Header = ({ user, logout }) => {
                 Create account
               </Button>
             </>
-          )}
-          {!user.isDefault && (
+          ) : (
             <Button onClick={handleLogout} variant="secondary">
               Log out
             </Button>

@@ -1,3 +1,4 @@
 [TYPECHECK]
-ignore-missing-imports=yes
 generated-members=objects,filter,get,create,update,delete
+[MESSAGES CONTROL]
+disable=E1101

@@ -65,13 +65,18 @@ function App() {
     <Router>
       <Header user={user} logout={handleLogout} />
       <Routes>
-        <Route path="/todo" element={<TodoApp />} />
-        <Route path="/images-gallery" element={<ImagesGallery />} />
+        {!user.isDefault && (
+          <>
+            <Route path="/todo" element={<TodoApp />} />
+            <Route path="/images-gallery" element={<ImagesGallery />} />
+
+            <Route
+              path="/profile"
+              element={<Profile user={user} fetchUser={fetchUser} />}
+            />
+          </>
+        )}
         <Route path="/" element={<Welcome user={user} />} />
-        <Route
-          path="/profile"
-          element={<Profile user={user} fetchUser={fetchUser} />}
-        />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login setCookie={setCookie} />} />
         <Route path="/activate/:uid/:token/" element={<VerifyEmail />} />
