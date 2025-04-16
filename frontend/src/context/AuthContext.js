@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
   const [hasFetchedUser, setHasFetchedUser] = useState(false)
 
   const fetchUser = async (token = cookies.auth_token) => {
-    console.log('fetchUser called, token:', token)
     if (!token || isFetchingUser || hasFetchedUser) return
     setIsFetchingUser(true)
     try {

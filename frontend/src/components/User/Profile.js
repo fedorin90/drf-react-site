@@ -13,7 +13,7 @@ import {
 import { api } from '../../api/axios'
 
 const Profile = () => {
-  const { user, fetchUser } = useContext(AuthContext)
+  const { user, setUser } = useContext(AuthContext)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [avatar, setAvatar] = useState(null)
@@ -33,17 +33,25 @@ const Profile = () => {
 
   const handleSubmit = async () => {
     try {
-      const formData = {
-        first_name: firstName,
-        last_name: lastName,
-        avatar: avatar,
+      const formData = new FormData()
+      formData.append('first_name', firstName)
+      formData.append('last_name', lastName)
+      if (avatar) {
+        formData.append('avatar', avatar)
       }
-      await api.patch('auth/users/me/', formData, {
+
+      const response = await api.patch('auth/users/me/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      fetchUser()
+      setUser({
+        email: response.data.email,
+        firstName: response.data.first_name,
+        lastName: response.data.last_name,
+        avatar: response.data.avatar,
+        isDefault: false,
+      })
       toast.success('Profile updated!')
     } catch (error) {
       console.log(error)

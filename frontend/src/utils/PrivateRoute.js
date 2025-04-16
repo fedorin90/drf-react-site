@@ -4,7 +4,6 @@ import AuthContext from '../context/AuthContext'
 
 const PrivateRoute = () => {
   const { user, isFetchingUser, hasFetchedUser } = useContext(AuthContext)
-  console.log(useContext(AuthContext))
   if (!hasFetchedUser || isFetchingUser) {
     return null
   }
