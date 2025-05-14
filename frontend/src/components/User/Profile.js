@@ -46,6 +46,7 @@ const Profile = () => {
         },
       })
       setUser({
+        id: response.data.id,
         email: response.data.email,
         firstName: response.data.first_name,
         lastName: response.data.last_name,

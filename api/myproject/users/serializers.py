@@ -29,8 +29,10 @@ class GoogleAuthSerializer(serializers.Serializer):
 
         if not email:
             raise serializers.ValidationError("Google account has no email")
+        user = User.objects.filter(email=email).first()
 
-        user, _ = User.objects.get_or_create(email=email, defaults={"is_active": True})
+        if not user:
+            user = User.objects.create_user(email=email, is_active=True)
 
         token, _ = Token.objects.get_or_create(user=user)  # pylint: disable=no-member
 

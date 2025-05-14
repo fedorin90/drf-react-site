@@ -7,6 +7,8 @@ services:
     volumes:
       - /app/node_modules
       - ./frontend:/app
+    environment:
+      - WATCHPACK_POLLING=tru
   db:
     image: postgres
     volumes:

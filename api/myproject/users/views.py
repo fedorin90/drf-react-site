@@ -1,3 +1,4 @@
+import logging
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Subquery, OuterRef, Q
@@ -7,15 +8,14 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.decorators import action
-from rest_framework import status
-import requests
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+import requests
 from .serializers import GoogleAuthSerializer, ChatMessageSerializer, UserSerializer
 from .models import ToDo, Image, ChatMessage
 from .serializers import ToDoSerializer, ImageSerializer
-from .pagination import TwentyPerPagePagination, NinePerPagePagination
+from .pagination import NinePerPagePagination
 
-import logging
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -121,9 +121,14 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 class InboxView(generics.ListAPIView):
     serializer_class = ChatMessageSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user_id = self.kwargs["user_id"]
+        user_id = self.request.user.id
+        user_kw_id = self.kwargs["user_id"]
+
+        if str(user_id) != user_kw_id:
+            return ChatMessage.objects.none()
 
         messages = ChatMessage.objects.filter(
             id__in=Subquery(
@@ -150,19 +155,34 @@ class InboxView(generics.ListAPIView):
 
 
 class GetMessages(generics.ListAPIView):
+    serializer_class = ChatMessageSerializer
 
     def get_queryset(self):
+        user_id = self.request.user.id
         sender_id = self.kwargs["sender_id"]
         reciever_id = self.kwargs["reciever_id"]
 
+        if str(user_id) not in [sender_id, reciever_id]:
+            return ChatMessage.objects.none()
+
         messages = ChatMessage.objects.filter(
-            sender__in=[sender_id, reciever_id], receiver__in=[sender_id, reciever_id]
+            sender__in=[sender_id, reciever_id], reciever__in=[sender_id, reciever_id]
         )
         return messages
 
 
 class SendMessage(generics.CreateAPIView):
     serializer_class = ChatMessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        sender_id = self.request.user.id
+        reciever_id = self.request.data.get("reciever")
+
+        if sender_id != int(self.request.data.get("sender")):
+            raise PermissionDenied("You can only send messages on your own behalf.")
+
+        serializer.save(sender_id=sender_id, reciever_id=reciever_id)
 
 
 class SearchUser(generics.ListAPIView):

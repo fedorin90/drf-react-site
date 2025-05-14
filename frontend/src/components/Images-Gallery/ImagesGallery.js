@@ -109,6 +109,7 @@ const ImagesGallery = () => {
 
   return (
     <div>
+      <h1 className="text-center">Images Gallery</h1>
       {loading ? (
         <Spinner />
       ) : (

@@ -18,6 +18,17 @@ class CustomUserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+
+        admin_user = CustomUser.objects.filter(is_superuser=True).first()
+        if admin_user:
+            ChatMessage.objects.create(
+                user=admin_user,
+                sender=admin_user,
+                reciever=user,
+                message="Welcome to the site! We are glad to see you.",
+                is_read=False,
+            )
+
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):

@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.get('auth/users/me/')
       setUser({
+        id: response.data.id,
         email: response.data.email,
         firstName: response.data.first_name,
         lastName: response.data.last_name,
