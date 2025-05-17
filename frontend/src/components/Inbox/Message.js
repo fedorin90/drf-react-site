@@ -70,14 +70,14 @@ const Message = ({ lastMessages, searchRes, chatID }) => {
           lastMessages.map((message) => (
             <Link
               to={`/inbox/${
-                message.sender === user.id ? message.reciever : message.sender
+                message.sender === user.id ? message.receiver : message.sender
               }/`}
               className="list-group-item list-group-item-action border-0 m-3"
               key={message.id}
             >
               <div
                 className={`d-flex align-items-start ${
-                  chatID === message.reciever || chatID === message.sender
+                  chatID === message.receiver || chatID === message.sender
                     ? 'bg-light'
                     : ''
                 }`}
@@ -92,9 +92,9 @@ const Message = ({ lastMessages, searchRes, chatID }) => {
                   />
                 ) : (
                   <img
-                    src={message.reciever_profile.avatar}
+                    src={message.receiver_profile.avatar}
                     className="rounded-circle mr-1"
-                    alt="reciever_profile"
+                    alt="receiver_profile"
                     width={40}
                     height={40}
                   />
@@ -102,7 +102,7 @@ const Message = ({ lastMessages, searchRes, chatID }) => {
                 <div className="flex-grow-1 ms-3">
                   <strong>
                     {message.sender === user.id &&
-                      message.reciever_profile.email}
+                      message.receiver_profile.email}
                     {message.sender !== user.id && message.sender_profile.email}
                   </strong>
 

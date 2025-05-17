@@ -57,7 +57,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     sender_profile = UserSerializer(read_only=True)
-    reciever_profile = UserSerializer(read_only=True)
+    receiver_profile = UserSerializer(read_only=True)
 
     class Meta:
         model = ChatMessage
@@ -66,8 +66,8 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "user",
             "sender",
             "sender_profile",
-            "reciever",
-            "reciever_profile",
+            "receiver",
+            "receiver_profile",
             "message",
             "is_read",
             "date",

@@ -24,7 +24,7 @@ urlpatterns = [
     path("auth/google/", GoogleLoginView.as_view(), name="google_login"),
     # inbox urls:
     path("my-inbox/<user_id>/", InboxView.as_view()),
-    path("get-messages/<sender_id>/<reciever_id>/", GetMessages.as_view()),
+    path("get-messages/<sender_id>/<receiver_id>/", GetMessages.as_view()),
     path("send-messages/", SendMessage.as_view()),
     path("search/<email>/", SearchUser.as_view()),
 ]

@@ -57,7 +57,19 @@ INSTALLED_APPS = [
     "djoser",
     "users",
     "corsheaders",
+    "channels",
 ]
+
+ASGI_APPLICATION = "myproject.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 # Настройки DRF
 REST_FRAMEWORK = {

@@ -5,6 +5,7 @@ import { api } from '../../api/axios'
 import AuthContext from '../../context/AuthContext'
 
 function MessageDetail({ chatID }) {
+  const socketRef = useRef(null)
   const { user } = useContext(AuthContext)
   const [messages, setMessages] = useState([])
   const [contactProfile, setContactProfile] = useState(null)
@@ -29,11 +30,45 @@ function MessageDetail({ chatID }) {
   }
 
   useEffect(() => {
-    fetchMessages()
-    const interval = setInterval(fetchMessages, 2000)
+    if (chatID) {
+      fetchMessages()
+    }
+  }, [chatID])
 
-    return () => clearInterval(interval)
-  }, [])
+  useEffect(() => {
+    if (!chatID) return
+
+    const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    const baseWs =
+      process.env.REACT_APP_WS_SERVER ||
+      `${wsScheme}://${window.location.hostname}:8000`
+    const socketUrl = `${baseWs}/ws/users/${user.id}/${chatID}/`
+    console.log(socketUrl)
+
+    socketRef.current = new WebSocket(socketUrl)
+
+    socketRef.current.onopen = () => {
+      console.log('WebSocket connected')
+    }
+
+    socketRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      console.log(data)
+
+      if (data.message) {
+        setMessages((prevMessages) => [...prevMessages, data])
+        setTimeout(() => messagesEndRef.current?.scrollIntoView(), 100)
+      }
+    }
+
+    socketRef.current.onclose = () => {
+      console.log('WebSocket disconnected')
+    }
+
+    return () => {
+      socketRef.current?.close()
+    }
+  }, [chatID])
 
   useEffect(() => {
     if (messages.length > 0 && !hasScrolledRef.current) {
@@ -42,26 +77,17 @@ function MessageDetail({ chatID }) {
     }
   }, [messages])
 
-  const sendNewMessage = async () => {
-    const formData = new FormData()
-    formData.append('user', user.id)
-    formData.append('sender', user.id)
-    formData.append('reciever', chatID)
-    formData.append('message', newMessage.message)
+  const sendNewMessage = () => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(
+        JSON.stringify({
+          user: user.id,
+          sender: user.id,
+          receiver: chatID,
+          message: newMessage.message,
+        })
+      )
 
-    try {
-      const res = await api.post('send-messages/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      await fetchMessages()
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView()
-      }, 200)
-    } catch (error) {
-      console.log(error)
-    } finally {
       setNewMessage({ message: '' })
     }
   }
@@ -107,7 +133,7 @@ function MessageDetail({ chatID }) {
                   <Row className="pb-4 justify-content-end" key={index}>
                     <Col xs="auto" className="text-end">
                       <img
-                        src={m.sender_profile.avatar}
+                        src={user?.avatar}
                         className="rounded-circle"
                         alt="You"
                         width={40}
@@ -132,9 +158,9 @@ function MessageDetail({ chatID }) {
                   <Row className="pb-4" key={index}>
                     <Col xs="auto">
                       <img
-                        src={m.sender_profile.avatar}
+                        src={contactProfile?.avatar}
                         className="rounded-circle"
-                        alt="Sharon Lessman"
+                        alt="Another person"
                         width={40}
                         height={40}
                       />
@@ -148,7 +174,7 @@ function MessageDetail({ chatID }) {
                     </Col>
                     <Col>
                       <div className="bg-light rounded py-2 px-3">
-                        <div className="fw-bold">{m.sender_profile.email}</div>
+                        <div className="fw-bold">{contactProfile?.email}</div>
                         {m.message}
                       </div>
                     </Col>

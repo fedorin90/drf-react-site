@@ -15,9 +15,15 @@ services:
       - ./data/db:/var/lib/postgresql/data
     env_file:
       - ./api/.env.local
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
   api:
     build: ./api
-    command: python manage.py runserver 0.0.0.0:8000
+    command: daphne -b 0.0.0.0 -p 8000 myproject.asgi:application
     working_dir: /code/myproject
     env_file:
       - ./api/.env.local

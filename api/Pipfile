@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
 djangorestframework = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
@@ -12,6 +11,10 @@ djoser = "*"
 django-cors-headers = "*"
 django-oauth-toolkit = "*"
 pillow = "*"
+channels-redis = "*"
+django = "*"
+channels = "*"
+daphne = "*"
 
 [dev-packages]
 

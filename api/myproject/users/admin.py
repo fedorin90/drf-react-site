@@ -14,7 +14,7 @@ class TodoAdmin(admin.ModelAdmin):
 
 class ChatMessageAdmin(admin.ModelAdmin):
     list_editable = ["is_read", "message"]
-    list_display = ["user", "sender", "reciever", "is_read", "message"]
+    list_display = ["user", "sender", "receiver", "is_read", "message"]
 
 
 admin.site.register(CustomUser, UserAdmin)

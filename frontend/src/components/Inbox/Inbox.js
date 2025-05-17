@@ -45,7 +45,7 @@ const Inbox = () => {
                   chatID={parseInt(params.id)}
                 />
                 <MessageDetail
-                  chatID={params.id}
+                  chatID={parseInt(params.id)}
                   key={window.location.pathname}
                 />
               </>

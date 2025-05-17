@@ -88,8 +88,8 @@ class ChatMessage(models.Model):
     sender = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="sender"
     )
-    reciever = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="reciever"
+    receiver = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="receiver"
     )
     message = models.CharField(max_length=1000)
     is_read = models.BooleanField(default=False)
@@ -100,7 +100,7 @@ class ChatMessage(models.Model):
         verbose_name_plural = "Message"
 
     def __str__(self):
-        return f"{self.sender} - {self.reciever}"
+        return f"{self.sender} - {self.receiver}"
 
     @property
     def sender_profile(self):
@@ -108,6 +108,6 @@ class ChatMessage(models.Model):
         return sender_profile
 
     @property
-    def reciever_profile(self):
-        reciever_profile = CustomUser.objects.get(email=self.reciever.email)
-        return reciever_profile
+    def receiver_profile(self):
+        receiver_profile = CustomUser.objects.get(email=self.receiver.email)
+        return receiver_profile
