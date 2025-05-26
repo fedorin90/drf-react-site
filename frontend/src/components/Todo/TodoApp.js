@@ -8,12 +8,12 @@ import {
   Form,
   Row,
   Col,
+  Card,
   InputGroup,
   ButtonGroup,
 } from 'react-bootstrap'
-import { RiDeleteBin2Line, RiRefreshLine } from 'react-icons/ri'
+import { MdOutlineDeleteForever, MdDoneOutline } from 'react-icons/md'
 import TodoList from './Todos/TodoList'
-import styles from './Todos/Todo.module.css'
 import {
   fetchTodos,
   createTodo,
@@ -32,8 +32,12 @@ function Todo() {
     const getSavedTodos = async () => {
       setLoading(true)
       try {
-        const res = await fetchTodos()
-        setTodos(res || [])
+        let res = await fetchTodos()
+
+        setTodos(
+          res.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)) ||
+            []
+        )
       } catch (error) {
         toast.error(error.message)
       } finally {
@@ -69,7 +73,9 @@ function Todo() {
 
   const toggleTodoHandler = async (id, isCompleted) => {
     const updatedTodo = await updateTodo(id, !isCompleted)
-    setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)))
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) => (todo.id === id ? updatedTodo : todo))
+    )
   }
 
   const resetTodoHandler = () => {
@@ -95,67 +101,74 @@ function Todo() {
   const completedTodoCount = todos.filter((todo) => todo.is_completed).length
 
   return (
-    <Container className="mt-5">
-      <Row>
-        <Col></Col>
-        <Col xs={4} xl={6} xxl={8}>
-          <h1 className="text-center">Todo App</h1>
-          <br />
-          <Form onSubmit={onSubmitHandler}>
-            <InputGroup className="mb-3 ms-1">
-              <Form.Control
-                size="lg"
-                type="text"
-                placeholder="Enter new todo"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                required
-              />
-              <Button
-                className={styles.todoButton}
-                variant="none"
-                type="submit"
-                id="button-addon2"
-              >
-                Submit
-              </Button>
-            </InputGroup>
-          </Form>
-          {todos.length > 0 && (
-            <ButtonGroup className="ms-1" size="lg" aria-label="Basic example">
-              <Button onClick={resetTodoHandler} variant="danger">
-                <RiRefreshLine />
-              </Button>
-              <Button
-                onClick={deleteCompletedTodosHandler}
-                disabled={!completedTodoCount}
-                variant="warning"
-              >
-                <RiDeleteBin2Line />
-              </Button>
-            </ButtonGroup>
-          )}
-          {loading ? (
-            <Spinner />
-          ) : (
-            <>
-              <TodoList
-                todo={todos}
-                deleteTodo={deleteTodoHandler}
-                toggleTodo={toggleTodoHandler}
-              />
+    <>
+      <h2 className="text-center m-5">Todo</h2>
+      <Container
+        fluid="md"
+        className="my-5 "
+        style={{ height: '80vh', overflow: 'hidden' }}
+      >
+        <Card className="h-100">
+          <Row className="h-100">
+            <Col></Col>
+            <Col xs={12} md={10} xl={9} className="overflow-auto">
+              <div className="position-relative px-3 py-2">
+                <Form onSubmit={onSubmitHandler}>
+                  <InputGroup className="my-3">
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter new todo"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      required
+                    />
+                    <Button variant="primary" id="button-addon2" type="submit">
+                      Submit
+                    </Button>
+                  </InputGroup>
+                </Form>
+              </div>
 
-              {completedTodoCount > 0 && (
-                <h2>{`You have completed ${completedTodoCount} ${
-                  completedTodoCount > 1 ? 'todos' : 'todo'
-                }`}</h2>
+              {todos.length > 0 && (
+                <div className="d-flex justify-content-center">
+                  <ButtonGroup className="mb-4">
+                    <Button onClick={resetTodoHandler} variant="danger">
+                      Remove all <MdOutlineDeleteForever />
+                    </Button>
+                    <Button
+                      onClick={deleteCompletedTodosHandler}
+                      disabled={!completedTodoCount}
+                      variant="warning"
+                    >
+                      Remove completed <MdDoneOutline />
+                    </Button>
+                  </ButtonGroup>
+                </div>
               )}
-            </>
-          )}
-        </Col>
-        <Col></Col>
-      </Row>
-    </Container>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <>
+                  <TodoList
+                    todo={todos}
+                    deleteTodo={deleteTodoHandler}
+                    toggleTodo={toggleTodoHandler}
+                  />
+                  <br></br>
+
+                  {completedTodoCount > 0 && (
+                    <h3>{`You have completed ${completedTodoCount} ${
+                      completedTodoCount > 1 ? 'todos' : 'todo'
+                    }`}</h3>
+                  )}
+                </>
+              )}
+            </Col>
+            <Col></Col>
+          </Row>
+        </Card>
+      </Container>
+    </>
   )
 }
 

@@ -1,29 +1,37 @@
-import { RiTodoFill, RiDeleteBin2Line } from 'react-icons/ri'
+import { RiDeleteBin2Line } from 'react-icons/ri'
 import { FaCheck } from 'react-icons/fa'
-import styles from './Todo.module.css'
+import { ListGroup, ToggleButton, Button } from 'react-bootstrap'
 
 function Todo({ todo, deleteTodo, toggleTodo }) {
   return (
-    <div
-      className={`${styles.todo} ${
-        todo.is_completed ? styles.completedTodo : ''
-      }`}
+    <ListGroup.Item
+      as="li"
+      variant={todo.is_completed ? 'dark' : 'light'}
+      className="d-flex justify-content-between align-items-center fs-3"
     >
-      <RiTodoFill className={styles.todoIcon} />
-      <div className={styles.todoText}>{todo.text}</div>
-      <RiDeleteBin2Line
-        className={styles.deleteIcon}
-        onClick={() => deleteTodo(todo.id)}
-        style={{ fontSize: '40px' }}
-      />
-      <FaCheck
-        className={styles.checkIcon}
-        onClick={() => {
+      <span className="text-break mx-1">{todo.text}</span>
+      <ToggleButton
+        className="ms-auto me-2"
+        id={`toggle-check-${todo.id}`}
+        type="checkbox"
+        variant="outline-primary"
+        checked={todo.is_completed}
+        value="1"
+        onChange={() => {
           toggleTodo(todo.id, todo.is_completed)
         }}
-        style={{ fontSize: '40px' }}
-      />
-    </div>
+      >
+        <FaCheck />
+      </ToggleButton>
+      <Button
+        onClick={() => deleteTodo(todo.id)}
+        className="ms-end"
+        variant="outline-danger"
+      >
+        {' '}
+        <RiDeleteBin2Line />
+      </Button>
+    </ListGroup.Item>
   )
 }
 

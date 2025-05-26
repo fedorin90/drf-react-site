@@ -71,7 +71,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Настройки DRF
+#  DRF
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
@@ -131,7 +131,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
 ]
-CORS_ALLOW_CREDENTIALS = True  # Разрешаем отправку cookies
+CORS_ALLOW_CREDENTIALS = True  # cookies
 
 
 ROOT_URLCONF = "myproject.urls"

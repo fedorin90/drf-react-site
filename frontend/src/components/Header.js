@@ -6,7 +6,6 @@ import { FaRegImages } from 'react-icons/fa'
 import { MdOutlineForwardToInbox } from 'react-icons/md'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Nav from 'react-bootstrap/Nav'
-import { ReactComponent as Logo } from '../images/logo.svg'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useContext } from 'react'
 import AuthContext from '../context/AuthContext'
@@ -23,7 +22,13 @@ const Header = () => {
     <Navbar className="bg-body-tertiary">
       <Container>
         <Navbar.Brand href="/">
-          <Logo />
+          <img
+            alt=""
+            src="/img/logo.svg"
+            width="200"
+            height="100"
+            className="d-inline-block align-top"
+          />{' '}
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end me-2">

@@ -1,10 +1,11 @@
 import Todo from './Todo'
+import { ListGroup } from 'react-bootstrap'
 
 function TodoList({ todo, deleteTodo, toggleTodo }) {
   return (
     <>
       {todo && todo.length > 0 ? (
-        <>
+        <ListGroup as="ol" numbered>
           {todo.map((todo) => (
             <Todo
               key={todo.id}
@@ -13,9 +14,12 @@ function TodoList({ todo, deleteTodo, toggleTodo }) {
               toggleTodo={toggleTodo}
             />
           ))}
-        </>
+        </ListGroup>
       ) : (
-        <h2>Todo list is empty</h2>
+        <>
+          <br></br>
+          <h3>Todo list is empty</h3>
+        </>
       )}
     </>
   )
