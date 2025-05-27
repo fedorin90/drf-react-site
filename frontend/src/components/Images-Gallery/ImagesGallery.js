@@ -94,9 +94,9 @@ const ImagesGallery = () => {
         if (currentPage > newTotalPages) {
           // If the current page is no longer valid, reset it
           setCurrentPage(Math.max(newTotalPages, 1)) // Reset to the last or first valid page
-        } else {
-          setImages(updatedImages.results || [])
         }
+
+        setImages(updatedImages.results || [])
 
         setTotalPages(newTotalPages)
       } else {
@@ -108,7 +108,7 @@ const ImagesGallery = () => {
   }
 
   return (
-    <div>
+    <>
       <h1 className="text-center">Images Gallery</h1>
       {loading ? (
         <Spinner />
@@ -149,7 +149,7 @@ const ImagesGallery = () => {
           )}
         </>
       )}
-    </div>
+    </>
   )
 }
 

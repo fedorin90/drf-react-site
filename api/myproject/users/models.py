@@ -24,7 +24,7 @@ class CustomUserManager(BaseUserManager):
             ChatMessage.objects.create(
                 user=admin_user,
                 sender=admin_user,
-                reciever=user,
+                receiver=user,
                 message="Welcome to the site! We are glad to see you.",
                 is_read=False,
             )

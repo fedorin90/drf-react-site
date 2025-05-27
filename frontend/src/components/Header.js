@@ -16,7 +16,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logoutUser()
-    navigate('/login')
+    navigate('/')
   }
   return (
     <Navbar className="bg-body-tertiary">

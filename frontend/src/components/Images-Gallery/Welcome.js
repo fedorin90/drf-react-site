@@ -1,11 +1,11 @@
-import React, { Button, Container } from 'react-bootstrap';
+import React, { Button, Container } from 'react-bootstrap'
 
 const jumbotronStyle = {
   padding: '2rem 1rem',
   marginBottom: '2rem',
   backgroundColor: '#e9ecef',
   borderRadius: '.3rem',
-};
+}
 
 const Welcome = () => {
   return (
@@ -21,7 +21,7 @@ const Welcome = () => {
         </Button>
       </p>
     </Container>
-  );
-};
+  )
+}
 
-export default Welcome;
+export default Welcome
