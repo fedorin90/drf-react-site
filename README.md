@@ -53,6 +53,22 @@ Access backend API at: http://localhost:8000
 
 Make sure .env.local files are configured with proper credentials before running.
 
+📸 Screenshots
+(Coming soon)
+
+🧠 Purpose
+This project was built as part of my learning journey and will be included in my developer portfolio.
+
+🔗 Live Demo
+(Coming soon – optional if deployed to Vercel/Netlify/Render/Heroku/etc.)
+
+📜 License
+This project is licensed under the MIT License.
+
+🙋‍♂️ Contact
+Created by Vladimir Fedorin
+Feel free to reach out via GitHub Issues or Pull Requests!
+
 ```bash
 git clone https://github.com/fedorin90/drf-react-site.git
 cd drf-react-site
