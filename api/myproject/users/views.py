@@ -123,6 +123,11 @@ class InboxView(generics.ListAPIView):
     serializer_class = ChatMessageSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
+
     def get_queryset(self):
         user_id = self.request.user.id
         user_kw_id = self.kwargs["user_id"]
@@ -168,6 +173,10 @@ class GetMessages(generics.ListAPIView):
         messages = ChatMessage.objects.filter(
             sender__in=[sender_id, receiver_id], receiver__in=[sender_id, receiver_id]
         )
+
+        unread_incoming = messages.filter(receiver=user_id, is_read=False)
+        unread_incoming.update(is_read=True)
+
         return messages
 
 

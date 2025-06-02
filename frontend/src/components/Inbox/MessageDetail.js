@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useContext, useRef } from 'react'
-import { Row, Col, Form, InputGroup, Button, Card } from 'react-bootstrap'
+import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
 import moment from 'moment'
 import { api } from '../../api/axios'
 import AuthContext from '../../context/AuthContext'

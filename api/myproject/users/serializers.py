@@ -58,6 +58,7 @@ class ImageSerializer(serializers.ModelSerializer):
 class ChatMessageSerializer(serializers.ModelSerializer):
     sender_profile = UserSerializer(read_only=True)
     receiver_profile = UserSerializer(read_only=True)
+    unread_count = serializers.SerializerMethodField()
 
     class Meta:
         model = ChatMessage
@@ -71,4 +72,14 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "message",
             "is_read",
             "date",
+            "unread_count",
         ]
+
+    def get_unread_count(self, obj):
+        request = self.context.get("request", None)
+        if request and hasattr(request, "user"):
+            user = request.user
+            return ChatMessage.objects.filter(
+                sender=obj.sender, receiver=user, is_read=False
+            ).count()
+        return 0

@@ -19,7 +19,7 @@ const Header = () => {
     navigate('/')
   }
   return (
-    <Navbar className="bg-body-tertiary">
+    <Navbar className="bg-body-tertiary" expand="lg">
       <Container>
         <Navbar.Brand href="/">
           <img
@@ -28,10 +28,10 @@ const Header = () => {
             width="200"
             height="100"
             className="d-inline-block align-top"
-          />{' '}
+          />
         </Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end me-2">
+        <Navbar.Toggle aria-controls="navbar-nav" />
+        <Navbar.Collapse id="navbar-nav">
           {user.isDefault ? (
             <Navbar.Text>Not signed in</Navbar.Text>
           ) : (
@@ -44,12 +44,11 @@ const Header = () => {
                 <Nav.Link href="/images-gallery" style={{ fontSize: '20px' }}>
                   <FaRegImages /> Images Gallery
                 </Nav.Link>
-
                 <Nav.Link href="/inbox" style={{ fontSize: '20px' }}>
                   <MdOutlineForwardToInbox /> Inbox
                 </Nav.Link>
               </Nav>
-              <Navbar.Text>
+              <Navbar.Text className="me-2">
                 Signed in as: <a href="/profile">{user.email}</a>
               </Navbar.Text>
             </>

@@ -1,6 +1,6 @@
 import { React, useState, useContext, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Card, Button, InputGroup, Form, Col } from 'react-bootstrap'
+import { Card, Button, InputGroup, Form, Col, Badge } from 'react-bootstrap'
 import { BiSearchAlt } from 'react-icons/bi'
 import { IoIosArrowBack } from 'react-icons/io'
 
@@ -103,7 +103,10 @@ const Message = ({ lastMessages, searchRes, chatID }) => {
                   <strong>
                     {message.sender === user.id &&
                       message.receiver_profile.email}
-                    {message.sender !== user.id && message.sender_profile.email}
+                    {message.sender !== user.id && message.sender_profile.email}{' '}
+                    {message.unread_count > 0 && (
+                      <Badge bg="success">{message.unread_count}</Badge>
+                    )}
                   </strong>
 
                   <Card.Text>
